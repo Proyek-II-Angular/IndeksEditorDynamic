@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1535218321 source:d:\titipan kuliah kakak\beditor-master\editor.c
+	"editor.h"
+
+1535218321 d:\titipan kuliah kakak\beditor-master\editor.h
+	<conio.h>
+	<windows.h>
+	"linkedlist.h"
+
+1535218321 d:\titipan kuliah kakak\beditor-master\linkedlist.h
+	<stdlib.h>
+	<stdio.h>
+
+1535218321 source:d:\titipan kuliah kakak\beditor-master\linkedlist.c
+	"linkedlist.h"
+
+1652532146 source:d:\titipan kuliah kakak\beditor-master\main.c
+	"editor.h"
+
