@@ -1,0 +1,16 @@
+Berikut beberapa fitur yang dapat digunakan dalam
+		teks editor
+
+==============INDEX EDITOR DYNAMIC===============
+||	        				||
+||						||
+||						||
+||	          ESC -> Menu status bar	||
+||	     CTRL + C -> Copy  Teks		||
+||	     CTRL + V -> Paste Teks		||	
+||	     CTRL + Z -> Undo  Teks		||
+||	     CTRL + Y -> Redo  Teks		||
+||	     Enter    -> Pilih menu		||
+||						||
+||						||
+||==============================================||	
