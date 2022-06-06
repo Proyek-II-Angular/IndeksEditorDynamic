@@ -16,6 +16,8 @@
 #define ARROWRIGHTKEY 77
 #define ARROWLEFTKEY 75
 
+#define CTRL_D 4
+
 #define yKey 121
 #define YKey 89
 #define nKey 110
@@ -33,10 +35,10 @@ typedef struct ScreenPos_s
 
 Point * pointCtor();
 void printListChars(List *list);
-void displayContent(List *list);
+void displayContent(Point *CursorPos, List *list);
 int lineLen(List *content, int line);
 int readFile(FILE *fp, List *content, Point *CursorPos);
-int editContent(List *content, Point *CursorPos);
+int editContent(char filename, List *content, Point *CursorPos);
 int saveToFile(FILE *fp, List *content);
 int getHeight(List *content);
 int getLineLen(List *content, int lineNum);

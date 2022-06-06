@@ -1,4 +1,7 @@
 #include "editor.h"
+#include "menu.h"
+
+#include <stdio.h>
 
 
 Point * pointCtor()
@@ -29,14 +32,16 @@ void gotoPos(Point *point)
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD Cord;
     Cord.X = point->x;
-    Cord.Y = point->y;
+    Cord.Y = point->y + 1;
     SetConsoleCursorPosition(hStdout, Cord);
 }
 
-void displayContent(List *list)
+void displayContent(Point *CursorPos, List *list)
 {
     Node *temp = NULL;
     system("cls");
+    displayMenuBar();
+    displayLine(CursorPos, list);
     for(temp = list->head; NULL != temp; temp = temp->next)
     {
         putchar(temp->data);
@@ -67,12 +72,15 @@ int readFile(FILE *fp, List *content, Point *CursorPos)
     return 0;
 }
 
-int editContent(List *content, Point *CursorPos)
+int editContent(char filename, List *content, Point *CursorPos)
 {
 
     unsigned char key;
     while(ESC != (key = _getch()))
     {
+    	displayMenuBar();
+    	displayLine(CursorPos, content);
+
         if(key == ARROWKEY)
         {
             key = _getch();
@@ -203,6 +211,15 @@ int editContent(List *content, Point *CursorPos)
                 ++CursorPos->index;
             }
         }
+        else if(key == CTRL_D){
+        	int copy[100];
+//        	for()
+			insertNode(content, nodeCtor(NLINE), CursorPos->index);
+			CursorPos->x = 0;
+			++CursorPos->y;
+			++CursorPos->index;
+
+		}
         else
         {
             if(key == ENTERKEY || key == NLINE)
@@ -220,26 +237,89 @@ int editContent(List *content, Point *CursorPos)
             }
         }
 
-        displayContent(content);
+        displayContent(CursorPos, content);
         gotoPos(CursorPos);
     }
 
-    CursorPos->y = getHeight(content);
-    gotoPos(CursorPos);
-    printf("\n----------\nSave Changes?(y/n) ");
-    while(ESC != (key = _getch()))
-    {
-        if(key == 'y' || key == 'Y')
-        {
-            putchar('y');
-            return 0;
-        }
-        else if(key == 'n' || key == 'N' || key == ESC)
-        {
-            putchar('n');
-            return 1;
-        }
-    }
+    if(key == ESC){
+    	CursorPos->y = getHeight(content);
+    	gotoPos(CursorPos);
+//    	system("CLS");
+		BackMenuAccess:
+    	switch(ToggleMenuAccess(filename, content, CursorPos)){
+    		case 1:{
+    		    CursorPos->y = getHeight(content);
+			    gotoPos(CursorPos);
+			    printf("\n----------\nSave Changes?(y/n) ");
+			    fflush(stdin);
+			    key = getchar();
+			    if(key == 'y' || key == 'Y')
+			    {
+			        printf("Saving Text File...\n");
+			        return 4;
+			    }
+			    else if(key == 'n' || key == 'N')
+			    {
+			        printf("Not Saved!\n");
+			        return 3;
+			    }
+				break;
+			}
+    		case 2:{
+    		    return 2;
+				break;
+			}
+    		case 3:{
+    			displayMenuBar();
+    			displayLine(CursorPos, content);
+    			displayContent(CursorPos, content);
+    			goto BackMenuAccess;
+				break;
+			}
+    		case 4:{
+    			CursorPos->y = getHeight(content);
+			    gotoPos(CursorPos);
+			    printf("\n----------\nSave Changes?(y/n) ");
+			    fflush(stdin);
+			    key = getchar();
+			    if(key == 'y' || key == 'Y')
+			    {
+			        printf("Saving Text File...\n");
+			        return 0;
+			    }
+			    else if(key == 'n' || key == 'N')
+			    {
+			        printf("Not Saved!\n");
+			        return 1;
+			    }
+				break;
+			}
+    		case 5:{
+			}
+    		case 6:{
+				break;
+			}
+    		case 7:{
+				displayMenuBar();
+				displayLine(CursorPos, content);
+    			displayContent(CursorPos, content);
+    			goto BackMenuAccess;
+				break;
+			}
+    		case 8:{
+				displayMenuBar();
+				displayLine(CursorPos, content);
+    			displayContent(CursorPos, content);
+    			editContent(filename, content, CursorPos);
+				break;
+			}
+//    		case 9:{
+//
+//			}
+			default: break;
+		}
+	}
+
 }
 
 int saveToFile(FILE *fp, List *content)
